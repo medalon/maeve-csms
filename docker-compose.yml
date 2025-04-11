@@ -37,35 +37,35 @@ services:
       - "serve"
       - "--ws-addr"
       - ":9310"
-      - "--wss-addr"
-      - ":9311"
+      # - "--wss-addr"
+      # - ":9311"
       - "--status-addr"
       - ":9312"
-      - "--tls-server-cert"
-      - "/certificates/csms.pem"
-      - "--tls-server-key"
-      - "/certificates/csms.key"
-      - "--tls-trust-cert"
-      - "/certificates/trust.pem"
+      # - "--tls-server-cert"
+      # - "/certificates/csms.pem"
+      # - "--tls-server-key"
+      # - "/certificates/csms.key"
+      # - "--tls-trust-cert"
+      # - "/certificates/trust.pem"
       - "--mqtt-addr"
       - "mqtt://mqtt:1883"
       - "--manager-api-addr"
       - "http://manager:9410"
     ports:
-      - "80:9310" # charge station ws
-      - "443:9311" # charge station wss
+      - "9310:9310" # charge station ws
+      # - "443:9311" # charge station wss
       - "9312:9312" # status
-    volumes:
-      - type: bind
-        source: ./config/certificates
-        target: /certificates
-        read_only: true
+    # volumes:
+    #   - type: bind
+    #     source: ./config/certificates
+    #     target: /certificates
+    #     read_only: true
     healthcheck:
       test: ["CMD", "/usr/bin/curl", "-s", "--fail", "http://localhost:9312/health"]
       interval: 10s
       timeout: 10s
       retries: 3
-    user: "${UID}:${GID}"
+    user: "10000:10000"
 
   manager:
     build:
@@ -81,10 +81,10 @@ services:
       - "-c"
       - "/config/config.toml"
     volumes:
-      - type: bind
-        source: ./config/certificates
-        target: /certificates
-        read_only: true
+      # - type: bind
+      #   source: ./config/certificates
+      #   target: /certificates
+      #   read_only: true
       - type: bind
         source: ./config/manager
         target: /config
@@ -97,7 +97,7 @@ services:
       interval: 10s
       timeout: 10s
       retries: 3
-    user: "${UID}:${GID}"
+    user: "10000:10000"
 
   firestore:
     image: google/cloud-sdk
